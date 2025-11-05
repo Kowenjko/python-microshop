@@ -1,5 +1,4 @@
-from typing import Annotated, Union
-from fastapi import APIRouter, Path
+from fastapi import APIRouter
 
 from users import crud
 from users.schemas import CreateUser
