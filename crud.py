@@ -83,7 +83,7 @@ async def get_users_with_posts(
     users = await session.scalars(stmt)
 
     # for user in users.unique():  # type: User
-    for user in users:  # type: User
+    for user in users:
         print("**" * 10)
         print(user)
         for post in user.posts:
@@ -103,7 +103,8 @@ async def get_users_with_posts_and_profiles(
     )
     users = await session.scalars(stmt)
 
-    for user in users:  # type: User
+    # type: User
+    for user in users:
         print("**" * 10)
         print(user, user.profile and user.profile.first_name)
         for post in user.posts:
@@ -114,7 +115,8 @@ async def get_posts_with_authors(session: AsyncSession):
     stmt = select(Post).options(joinedload(Post.user)).order_by(Post.id)
     posts = await session.scalars(stmt)
 
-    for post in posts:  # type: Post
+    # type: Post
+    for post in posts:
         print("post", post)
         print("author", post.user)
 
