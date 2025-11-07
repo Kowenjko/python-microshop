@@ -71,11 +71,30 @@ def validate_auth_user(
     return user
 
 
+@router.post("/login/", response_model=TokenInfo)
+def auth_user_issue_jwt(
+    user: UserSchema = Depends(validate_auth_user),
+):
+    jwt_payload = {
+        # subject
+        "sub": user.username,
+        "username": user.username,
+        "email": user.email,
+        # "logged_in_at"
+    }
+    token = auth_utils.encode_jwt(jwt_payload)
+    return TokenInfo(
+        access_token=token,
+        token_type="Bearer",
+    )
+
+
 def get_current_token_payload(
     # credentials: HTTPAuthorizationCredentials = Depends(http_bearer),
     token: str = Depends(oauth2_scheme),
 ) -> dict:
     # token = credentials.credentials
+
     try:
         payload = auth_utils.decode_jwt(
             token=token,
@@ -109,24 +128,6 @@ def get_current_active_auth_user(
     raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN,
         detail="user inactive",
-    )
-
-
-@router.post("/login/", response_model=TokenInfo)
-def auth_user_issue_jwt(
-    user: UserSchema = Depends(validate_auth_user),
-):
-    jwt_payload = {
-        # subject
-        "sub": user.username,
-        "username": user.username,
-        "email": user.email,
-        # "logged_in_at"
-    }
-    token = auth_utils.encode_jwt(jwt_payload)
-    return TokenInfo(
-        access_token=token,
-        token_type="Bearer",
     )
 
 
